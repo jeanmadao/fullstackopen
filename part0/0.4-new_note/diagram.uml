@@ -1,0 +1,37 @@
+@startuml
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+note over server
+  server accessess the data from
+  the POST request, creates a new
+  note object and adds it to the
+  notes array
+end note
+server->browser: URL redirect to "/notes"
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser
+  browser starts executing js-code
+  that requests JSON data from server
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+
+note over server
+  server send the notes array
+  (in which the new note is)
+  in json format
+end note
+
+server-->browser: [..., { content: "yolo", date: "2022-02-05T17:53:51.113Z" }, ...]
+
+note over browser
+  browser executes the event handler
+  that renders notes to display
+end note
+@enduml
+
