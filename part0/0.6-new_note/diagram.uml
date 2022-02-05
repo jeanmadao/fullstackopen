@@ -1,0 +1,9 @@
+@startuml
+note over browser
+  On submit, prevents sending a GET request
+  by default, fetches the content in the
+  note form, adds the new note, and redraws
+  the notes using the DOM API
+end note
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+@enduml
