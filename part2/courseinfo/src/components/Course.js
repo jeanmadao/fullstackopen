@@ -1,13 +1,13 @@
 import React from 'react'
 
-const Header = ({ course }) => {
+const Header = ({ name }) => {
   return (
-    <h1>{course.name}</h1>
+    <h1>{name}</h1>
   )
 }
 
-const Total = ({ course }) => {
-  const sum = course.parts.reduce((sum, part) => sum + part.exercises, 0)
+const Total = ({ parts }) => {
+  const sum = parts.reduce((sum, part) => sum + part.exercises, 0)
   return (
     <p><strong>total of {sum} exercices</strong></p>
   )
@@ -21,10 +21,10 @@ const Part = ({ part }) => {
   )
 }
 
-const Content = ({ course }) => {
+const Content = ({ parts }) => {
   return (
     <div>
-      {course.parts.map(part =>
+      {parts.map(part =>
         <Part key={part.id} part={part} />
       )}
     </div>
@@ -34,9 +34,9 @@ const Content = ({ course }) => {
 const Course = ({ course }) => {
   return (
     <div>
-      <Header course={course} />
-      <Content course={course} />
-      <Total course={course} />
+      <Header name={course.name} />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   )
 }
