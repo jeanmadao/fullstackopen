@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Country = ({ country, show }) => {
+const Country = ({ country, solo }) => {
+  const [show, setShow] = useState(false)
+
+  const handleShowClick = () => {
+    setShow(show ^ true)
+  }
+
+  if (solo && show === false) {
+    setShow(true)
+  }
+
   if (show) {
     return (
       <div>
+        <button onClick={handleShowClick}>hide</button>
         <h1>{country.name.common}</h1>
         <div>capital {country.capital}</div>
         <div>area {country.area}</div>
@@ -18,9 +29,11 @@ const Country = ({ country, show }) => {
       </div>
     )
   } else {
+
     return (
       <li>
         {country.name.common}
+        <button onClick={handleShowClick}>show</button>
       </li>
     )
   }

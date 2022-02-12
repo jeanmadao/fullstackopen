@@ -11,13 +11,13 @@ const Countries = ({ countriesToShow }) => {
     )
   } else if (countriesToShow.length === 1) {
     return (
-      <Country key={countriesToShow[0].name.official} country={countriesToShow[0]} show={true} />
+      <Country key={countriesToShow[0].name.official} country={countriesToShow[0]} solo={true} />
     )
   } else {
     return (
       <ul>
         {countriesToShow.map(country =>
-          <Country key={country.name.official} country={country} show={false} />
+          <Country key={country.name.official} country={country} solo={false} />
         )}
       </ul>
     )
