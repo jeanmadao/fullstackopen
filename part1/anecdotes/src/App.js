@@ -2,9 +2,44 @@ import { useState } from 'react'
 
 const Button = ({handler, text}) => <button onClick={handler}>{text}</button>
 
-const Anecdote = ({anecdote}) => <div>{anecdote}</div>
-
 const Votes = ({vote}) => <div>has {vote} votes</div>
+
+const Anecdote = ({anecdote, vote}) => (
+  <div>
+    <div>{anecdote}</div>
+    <Votes vote={vote} />
+  </div>
+)
+
+const Title = ({title}) => <h1>{title}</h1>
+
+const DailyAnecdote = ({anecdote, vote, voteHandler, randomHandler}) => (
+    <div>
+      <Title title="Anecdote of the day" />
+      <Anecdote anecdote={anecdote} vote={vote} />
+      <Button handler={voteHandler} text={"vote"} />
+      <Button handler={randomHandler} text={"next anecdote"} />
+    </div>
+)
+
+const findMaxIndex = (array) => {
+  let max = 0
+  let maxIndex = 0
+  for (let i=0; i < array.length; i++) {
+    if (array[i] > max) {
+      max = array[i]
+      maxIndex = i
+    }
+  }
+  return maxIndex
+}
+
+const PopularAnecdote = ({anecdote, vote}) => (
+    <div>
+      <Title title="Anecdote with most votes" />
+      <Anecdote anecdote={anecdote} vote={vote} />
+    </div>
+)
 
 const App = () => {
   const anecdotes = [
@@ -21,6 +56,7 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Uint8Array(anecdotes.length))
 
+  const popularAnecdote = findMaxIndex(votes)
   const randomSelected = () => setSelected(Math.floor(Math.random() * anecdotes.length))
   const voteAnecdote = () => {
     const votesCopy = [...votes]
@@ -30,10 +66,8 @@ const App = () => {
 
   return (
     <div>
-      <Anecdote anecdote={anecdotes[selected]} />
-      <Votes vote={votes[selected]} />
-      <Button handler={voteAnecdote} text={"vote"} />
-      <Button handler={randomSelected} text={"next anecdote"} />
+      <DailyAnecdote anecdote={anecdotes[selected]} vote={votes[selected]} voteHandler={voteAnecdote} randomHandler={randomSelected} />
+      <PopularAnecdote anecdote={anecdotes[popularAnecdote]} vote={votes[popularAnecdote]} />
     </div>
   )
 }
