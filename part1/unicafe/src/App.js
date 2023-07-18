@@ -15,7 +15,7 @@ const Feedback = ({goodHandler, neutralHandler, badHandler}) => {
   )
 }
 
-const Stat = ({name, value}) => <div>{name} {value}</div>
+const StatisticLine = ({text, value}) => <div>{text} {value}</div>
 
 const Statistics = ({good, neutral, bad}) => {
   const all = good + neutral + bad
@@ -25,12 +25,12 @@ const Statistics = ({good, neutral, bad}) => {
     return (
       <div>
         <Title title="statistics" />
-        <Stat name="good" value={good} />
-        <Stat name="neutral" value={neutral} />
-        <Stat name="bad" value={bad} />
-        <Stat name="all" value={all} />
-        <Stat name="average" value={average} />
-        <Stat name="positive" value={positive + " %"} />
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value={all} />
+        <StatisticLine text="average" value={average} />
+        <StatisticLine text="positive" value={positive + " %"} />
       </div>
     )
   } else {
