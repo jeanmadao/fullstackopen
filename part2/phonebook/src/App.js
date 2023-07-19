@@ -6,10 +6,17 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
 
+
   const addName = (event) => {
     event.preventDefault()
-    const newPerson = { name: newName }
-    setPersons(persons.concat(newPerson))
+
+    const existence = persons.find(person => person.name === newName)
+    if (existence === undefined) {
+      const newPerson = { name: newName }
+      setPersons(persons.concat(newPerson))
+    } else {
+      alert(`${newName} is already added to phonebook`)
+    }
     setNewName('')
   }
 
@@ -32,7 +39,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map( person =>
+      {persons.map(person =>
         <div key={person.name}>{person.name}</div>
       )}
       
