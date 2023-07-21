@@ -24,8 +24,9 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
 
-    const existence = persons.find(person => person.name === newName)
-    if (existence === undefined) {
+
+    const potentialPerson = persons.find(person => person.name === newName)
+    if (potentialPerson === undefined) {
       const newPerson = {
         name: newName,
         number: newNumber
@@ -35,10 +36,26 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
         })
     }
-    else {
-      alert(`${newName} is already added to phonebook`)
+    else if (window.confirm(`${potentialPerson.name} is already added to phonebook, replace the old number with a new one ?`)) {
+      const updatedPerson = { ...potentialPerson, number: newNumber } 
+      personService
+        .update(potentialPerson.id, updatedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id=== returnedPerson.id ? returnedPerson : person))
+        })
     }
     setNewName('')
+    setNewNumber('')
+  }
+
+  const deleteName = (id) => {
+    return () => {
+      const person = persons.find(person => person.id === id)
+      if (window.confirm(`Delete ${person.name} ?`)) {
+        personService.pop(id)
+          .then(() => setPersons(persons.filter(person => person.id !== id)))
+      }
+    }
   }
 
   const handleInputChange = (setter) => (event) => setter(event.target.value)
@@ -61,7 +78,7 @@ const App = () => {
         ]}
       />
       <h2>Numbers</h2>
-      <NumbersList contacts={filteredPersons} />
+      <NumbersList contacts={filteredPersons} pop={deleteName} />
     </div>
   )
 }
