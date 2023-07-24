@@ -13,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -59,6 +60,15 @@ const App = () => {
             setSuccessMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          setPersons(persons.filter(person => person.name !== newName))
+          setErrorMessage(
+            `${newName} was already removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
     setNewName('')
     setNewNumber('')
@@ -68,14 +78,22 @@ const App = () => {
     return () => {
       const person = persons.find(person => person.id === id)
       if (window.confirm(`Delete ${person.name} ?`)) {
+        setPersons(persons.filter(person => person.id !== id))
         personService.pop(id)
           .then(() => {
-            setPersons(persons.filter(person => person.id !== id))
             setSuccessMessage(
               `Deleted ${person.name}`
             )
             setTimeout(() => {
               setSuccessMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setErrorMessage(
+              `${person.name} was already removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
             }, 5000)
           })
       }
@@ -87,7 +105,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={successMessage} notifStatus={"success"} />
+      <Notification message={errorMessage} notifStatus={"error"} />
       <Input
         description="filter shown with"
         value={filter}
