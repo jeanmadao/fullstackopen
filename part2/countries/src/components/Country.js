@@ -19,9 +19,9 @@ const Country = (props) => {
     )
   } else {
     return (
-      <div>
+      <>
         {props.name}
-      </div>
+      </>
     )
   }
 }
