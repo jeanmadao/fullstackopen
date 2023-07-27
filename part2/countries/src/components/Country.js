@@ -6,7 +6,7 @@ const Country = (props) => {
         <div>capital {props.capital}</div>
         <div>area {props.area}</div>
         
-        <h2>languages:</h2>
+        <h3>languages:</h3>
         <ul>
           {Object.values(props.languages).map(language =>
             <li key={language}>
@@ -15,6 +15,11 @@ const Country = (props) => {
           )}
         </ul>
         <img src={props.flag} height="200" />
+
+        <h2>Weather in {props.capital}</h2>
+        <div>temperature {props.temperature} Celsius</div>
+        <img src={`https://openweathermap.org/img/wn/${props.icon}@2x.png`} />
+        <div>wind {props.wind} m/s</div>
       </div>
     )
   } else {

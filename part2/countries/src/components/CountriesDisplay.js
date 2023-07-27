@@ -3,6 +3,7 @@ import Country from './Country'
 const CountriesDisplay = ({ countries, expanded, toggle } ) => {
   if (countries.length === 1) {
     const country = countries[0]
+    console.log(country)
     return (
       <div>
         <Country 
@@ -11,6 +12,9 @@ const CountriesDisplay = ({ countries, expanded, toggle } ) => {
           area={country.area}
           languages={country.languages}
           flag={country.flags.svg}
+          temperature={country.capitalInfo.weather.main.temp}
+          wind={country.capitalInfo.weather.wind.speed}
+          icon={country.capitalInfo.weather.weather[0].icon}
           expanded={true}
         />
       </div>
@@ -19,7 +23,7 @@ const CountriesDisplay = ({ countries, expanded, toggle } ) => {
     return (
       <div>
         {countries.map((country, index) =>
-          <div>
+          <div key={`${country.name.common}-div`}>
             <Country 
               key={country.name.common}
               name={country.name.common}
@@ -27,9 +31,12 @@ const CountriesDisplay = ({ countries, expanded, toggle } ) => {
               area={country.area}
               languages={country.languages}
               flag={country.flags.svg}
-              expanded={expanded[index]}
+              temperature={country.capitalInfo.weather.main.temp}
+              wind={country.capitalInfo.weather.wind.speed}
+              icon={country.capitalInfo.weather.weather[0].icon}
+              expanded={country.expanded}
             />
-            <button onClick={toggle(index)}>show</button>
+            <button key={`${country.name.common}-btn`} onClick={toggle(index)}>show</button>
           </div>
         )}
       </div>
