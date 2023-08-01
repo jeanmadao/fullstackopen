@@ -3,12 +3,12 @@ import Input from './components/Input'
 import Form from './components/Form'
 import NumbersList from './components/NumbersList'
 import Notification from './components/Notification'
-import personService from './services/persons'
+import personService from './services/people'
 import './index.css'
 
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [people, setPeople] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
@@ -18,18 +18,18 @@ const App = () => {
   useEffect(() => {
     personService
       .getAll()
-      .then(initialPersons => {
-        setPersons(initialPersons)
+      .then(initialPeople => {
+        setPeople(initialPeople)
       })
   }, [])
 
-  const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+  const filteredPeople = people.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
   const addName = (event) => {
     event.preventDefault()
 
 
-    const potentialPerson = persons.find(person => person.name === newName)
+    const potentialPerson = people.find(person => person.name === newName)
     if (potentialPerson === undefined) {
       const newPerson = {
         name: newName,
@@ -37,7 +37,7 @@ const App = () => {
       }
       personService.create(newPerson)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
+          setPeople(people.concat(returnedPerson))
           setSuccessMessage(
             `Added ${newName}`
           )
@@ -48,11 +48,11 @@ const App = () => {
     }
 
     else if (window.confirm(`${potentialPerson.name} is already added to phonebook, replace the old number with a new one ?`)) {
-      const updatedPerson = { ...potentialPerson, number: newNumber } 
+      const updatedPerson = { ...potentialPerson, number: newNumber }
       personService
         .update(potentialPerson.id, updatedPerson)
         .then(returnedPerson => {
-          setPersons(persons.map(person => person.id=== returnedPerson.id ? returnedPerson : person))
+          setPeople(people.map(person => person.id === returnedPerson.id ? returnedPerson : person))
           setSuccessMessage(
             `Updated ${newName}`
           )
@@ -61,7 +61,7 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setPersons(persons.filter(person => person.name !== newName))
+          setPeople(people.filter(person => person.name !== newName))
           setErrorMessage(
             `${newName} was already removed from server`
           )
@@ -76,9 +76,9 @@ const App = () => {
 
   const deleteName = (id) => {
     return () => {
-      const person = persons.find(person => person.id === id)
+      const person = people.find(person => person.id === id)
       if (window.confirm(`Delete ${person.name} ?`)) {
-        setPersons(persons.filter(person => person.id !== id))
+        setPeople(people.filter(person => person.id !== id))
         personService.pop(id)
           .then(() => {
             setSuccessMessage(
@@ -122,7 +122,7 @@ const App = () => {
         ]}
       />
       <h2>Numbers</h2>
-      <NumbersList contacts={filteredPersons} pop={deleteName} />
+      <NumbersList contacts={filteredPeople} pop={deleteName} />
     </div>
   )
 }
