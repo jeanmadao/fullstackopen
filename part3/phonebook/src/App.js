@@ -45,6 +45,14 @@ const App = () => {
             setSuccessMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          setErrorMessage(
+            error.response.data.error
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
 
     else if (window.confirm(`${potentialPerson.name} is already added to phonebook, replace the old number with a new one ?`)) {
@@ -61,9 +69,8 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setPeople(people.filter(person => person.name !== newName))
           setErrorMessage(
-            `${newName} was already removed from server`
+            error.response.data.error
           )
           setTimeout(() => {
             setErrorMessage(null)
@@ -90,7 +97,7 @@ const App = () => {
           })
           .catch(error => {
             setErrorMessage(
-              `${person.name} was already removed from server`
+              error.response.data.error
             )
             setTimeout(() => {
               setErrorMessage(null)
