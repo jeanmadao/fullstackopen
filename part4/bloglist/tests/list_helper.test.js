@@ -74,7 +74,8 @@ describe('total likes', () => {
   })
 
   test('of a bigger list is calculated right', () => {
-    const result = listHelper.totalLikes(listWithOneBlog)
-    expect(result).toBe(5)
+    const result = listHelper.totalLikes(blogs)
+    expect(result).toBe(36)
   })
 })
+
