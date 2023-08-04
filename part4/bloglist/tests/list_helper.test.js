@@ -97,8 +97,6 @@ describe('favorite blog', () => {
   })
 })
 
-console.log("salut", listHelper.mostBlogs(blogs))
-
 // describe('most blogs', () => {
 //   test('of empty list is null', () => {
 //     const result = listHelper.mostBlogs([])
