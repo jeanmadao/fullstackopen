@@ -94,6 +94,24 @@ test('POST request missing "title" or "url" properties denies saving it to the D
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 }, 100000)
 
+describe('Deletion of a blog', () => {
+  test('Delete one specific note', async() => {
+    const blogsAtStart = await helper.blogsInDb() 
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+    const contents = blogsAtEnd.map(blog => blog.id)
+    expect(contents).not.toContain(blogToDelete.id)
+  }, 100000)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
