@@ -22,17 +22,19 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 }, 100000)
 
-test('all blogs are returned', async() => {
+test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
 
   expect(response.body).toHaveLength(helper.initialBlogs.length)
 }, 100000)
 
-test('all blogs has "id" property', async() => {
+test('all blogs has "id" property', async () => {
   const response = await api.get('/api/blogs')
 
   for (let blog of response.body) {
     expect(blog.id).toBeDefined()
+    expect(blog._id).not.toBeDefined()
+    expect(blog.__v).not.toBeDefined()
   }
 }, 100000)
 
@@ -58,7 +60,7 @@ test('POST request returns a json', async () => {
 
 }, 100000)
 
-test('POST request missing "likes" property set it to 0 by default and save it', async() => {
+test('POST request missing "likes" property set it to 0 by default and save it', async () => {
   const newBlog = {
     title: "I'm cold",
     author: "Feilong",
@@ -79,7 +81,7 @@ test('POST request missing "likes" property set it to 0 by default and save it',
 
 }, 100000)
 
-test('POST request missing "title" or "url" properties denies saving it to the DB and send bad request', async() => {
+test('POST request missing "title" or "url" properties denies saving it to the DB and send bad request', async () => {
   const badBlogObject = {
     url: "https://google.com/",
     likes: 14,
@@ -95,7 +97,7 @@ test('POST request missing "title" or "url" properties denies saving it to the D
 }, 100000)
 
 describe('Deletion of a blog', () => {
-  test('Delete one specific note', async() => {
+  test('Delete one specific note', async () => {
     const blogsAtStart = await helper.blogsInDb() 
     const blogToDelete = blogsAtStart[0]
 
@@ -110,6 +112,27 @@ describe('Deletion of a blog', () => {
     const contents = blogsAtEnd.map(blog => blog.id)
     expect(contents).not.toContain(blogToDelete.id)
   }, 100000)
+})
+
+describe('Updating a blog', () => {
+  test('Updates a blog\'s likes', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes + 100
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(201)
+
+    const receivedBlog = await helper.blogById(blogToUpdate.id)
+    expect(receivedBlog.likes).toBe(blogToUpdate.likes + 100)
+  })
 })
 
 afterAll(async () => {
