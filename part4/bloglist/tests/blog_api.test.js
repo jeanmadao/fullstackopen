@@ -81,9 +81,16 @@ test('blogs are returned as json', async () => {
 
 test('all blogs are returned', async() => {
   const response = await api.get('/api/blogs')
-  console.log(response.body)
 
   expect(response.body).toHaveLength(initialBlogs.length)
+}, 100000)
+
+test('all blogs has "id" property', async() => {
+  const response = await api.get('/api/blogs')
+
+  for (let blog of response.body) {
+    expect(blog.id).toBeDefined()
+  }
 }, 100000)
 
 afterAll(async () => {
