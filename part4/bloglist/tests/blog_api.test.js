@@ -13,7 +13,7 @@ beforeEach(async () => {
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
-})
+}, 100000)
 
 test('blogs are returned as json', async () => {
   await api
@@ -55,6 +55,27 @@ test('POST request returns a json', async () => {
 
   const contents = blogsAtEnd.map(blog => `${blog.title} - ${blog.author}: ${blog.url}, likes:${blog.likes}`)
   expect(contents).toContain(`I'm cold - Feilong: https://google.com/, likes:7`)
+
+}, 100000)
+
+test('missing "likes" property set it to 0 by default and save it', async() => {
+  const newBlog = {
+    title: "I'm cold",
+    author: "Feilong",
+    url: "https://google.com/",
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBeDefined()
+  expect(response.body.likes).toBe(0)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
 }, 100000)
 
