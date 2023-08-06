@@ -58,7 +58,7 @@ test('POST request returns a json', async () => {
 
 }, 100000)
 
-test('missing "likes" property set it to 0 by default and save it', async() => {
+test('POST request missing "likes" property set it to 0 by default and save it', async() => {
   const newBlog = {
     title: "I'm cold",
     author: "Feilong",
@@ -77,6 +77,21 @@ test('missing "likes" property set it to 0 by default and save it', async() => {
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
+}, 100000)
+
+test('POST request missing "title" or "url" properties denies saving it to the DB and send bad request', async() => {
+  const badBlogObject = {
+    url: "https://google.com/",
+    likes: 14,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(badBlogObject)
+    .expect(400)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 }, 100000)
 
 afterAll(async () => {
