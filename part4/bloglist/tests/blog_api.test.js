@@ -4,7 +4,9 @@ const app = require('../app')
 
 const api = supertest(app)
 
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 beforeEach(async () => {
@@ -91,14 +93,14 @@ test('POST request missing "title" or "url" properties denies saving it to the D
     .post('/api/blogs')
     .send(badBlogObject)
     .expect(400)
-  
+
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 }, 100000)
 
 describe('Deletion of a blog', () => {
   test('Delete one specific note', async () => {
-    const blogsAtStart = await helper.blogsInDb() 
+    const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
@@ -132,7 +134,47 @@ describe('Updating a blog', () => {
 
     const receivedBlog = await helper.blogById(blogToUpdate.id)
     expect(receivedBlog.likes).toBe(blogToUpdate.likes + 100)
+  }, 100000)
+})
+
+describe('when there is initially one user in db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('salut', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
   })
+
+  test('users are returned as json', async () => {
+    await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  }, 100000)
+
+  test('creation succeeds with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'jeanmadao',
+      name: 'Jean Huynh',
+      password: 'doubidou'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  }, 100000)
 })
 
 afterAll(async () => {
