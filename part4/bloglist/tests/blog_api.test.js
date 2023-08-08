@@ -15,6 +15,12 @@ beforeEach(async () => {
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('salut', 10)
+  const user = new User({ username: 'root', passwordHash })
+
+  await user.save()
 }, 100000)
 
 test('blogs are returned as json', async () => {
@@ -47,10 +53,21 @@ test('POST request returns a json', async () => {
     url: "https://google.com/",
     likes: 7,
   }
+  const login = {
+    username: 'root',
+    password: 'salut'
+  }
+
+  const credentials = await api
+    .post('/api/login')
+    .send(login)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
 
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set({ Authorization: `Bearer ${credentials.body.token}` })
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -62,6 +79,27 @@ test('POST request returns a json', async () => {
 
 }, 100000)
 
+test('POST request with missing token is unauthorized(401)', async () => {
+  const newBlog = {
+    title: "I'm cold",
+    author: "Feilong",
+    url: "https://google.com/",
+    likes: 7,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+  const contents = blogsAtEnd.map(blog => `${blog.title} - ${blog.author}: ${blog.url}, likes:${blog.likes}`)
+  expect(contents).not.toContain(`I'm cold - Feilong: https://google.com/, likes:7`)
+})
+
 test('POST request missing "likes" property set it to 0 by default and save it', async () => {
   const newBlog = {
     title: "I'm cold",
@@ -69,9 +107,21 @@ test('POST request missing "likes" property set it to 0 by default and save it',
     url: "https://google.com/",
   }
 
+  const login = {
+    username: 'root',
+    password: 'salut'
+  }
+
+  const credentials = await api
+    .post('/api/login')
+    .send(login)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
   const response = await api
     .post('/api/blogs')
     .send(newBlog)
+    .set({ Authorization: `Bearer ${credentials.body.token}` })
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -89,9 +139,21 @@ test('POST request missing "title" or "url" properties denies saving it to the D
     likes: 14,
   }
 
+  const login = {
+    username: 'root',
+    password: 'salut'
+  }
+
+  const credentials = await api
+    .post('/api/login')
+    .send(login)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
   await api
     .post('/api/blogs')
     .send(badBlogObject)
+    .set({ Authorization: `Bearer ${credentials.body.token}` })
     .expect(400)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -100,16 +162,42 @@ test('POST request missing "title" or "url" properties denies saving it to the D
 
 describe('Deletion of a blog', () => {
   test('Delete one specific note', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const newBlog = {
+      title: "I'm cold",
+      author: "Feilong",
+      url: "https://google.com/",
+      likes: 7,
+    }
+    const login = {
+      username: 'root',
+      password: 'salut'
+    }
+
+    const credentials = await api
+      .post('/api/login')
+      .send(login)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogToDelete = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set({ Authorization: `Bearer ${credentials.body.token}` })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterPost = await helper.blogsInDb()
+    expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
+
 
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDelete.body.id}`)
+      .set({ Authorization: `Bearer ${credentials.body.token}` })
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 
     const contents = blogsAtEnd.map(blog => blog.id)
     expect(contents).not.toContain(blogToDelete.id)
@@ -196,27 +284,27 @@ describe('when there is initially one user in db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
   })
-})
 
-test('creation fails with proper statuscode and message if password is not long enough', async () => {
-  const usersAtStart = await helper.usersInDb()
+  test('creation fails with proper statuscode and message if password is not long enough', async () => {
+    const usersAtStart = await helper.usersInDb()
 
-  const newUser = {
-    username: 'Bierremutant',
-    name: 'Bierre Defraene',
-    password: 'yo',
-  }
+    const newUser = {
+      username: 'Bierremutant',
+      name: 'Bierre Defraene',
+      password: 'yo',
+    }
 
-  const result = await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(400)
-    .expect('Content-Type', /application\/json/)
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
 
-  expect(result.body.error).toContain('password must be at least 3 characters long')
+    expect(result.body.error).toContain('password must be at least 3 characters long')
 
-  const usersAtEnd = await helper.usersInDb()
-  expect(usersAtEnd).toEqual(usersAtStart)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(usersAtStart)
+  })
 })
 
 afterAll(async () => {

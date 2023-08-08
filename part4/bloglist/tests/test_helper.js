@@ -10,6 +10,19 @@ const listWithOneBlog = [
   }
 ]
 
+const users = [
+  {
+    username: "feilong",
+    name: "JP",
+    password: "doubidoubap"
+  },
+  {
+    username: "jimini",
+    name: "Xinouuu",
+    password: "beepboopbop"
+  }
+]
+
 const initialBlogs = [
   {
     title: "React patterns",
