@@ -1,19 +1,32 @@
 const logger = require('./logger')
 const morgan = require('morgan')
 
-const requestLogger = (request, response, next) => {
-  morgan((tokens, req, res) => {
-    morgan.token('data-sent', (req) => JSON.stringify(req.body))
-    logger.info([
-      'Method: ', tokens.method(req, res), '\n',
-      'Path: ', tokens.url(req, res), '\n',
-      'Status: ', tokens.status(res, res), '\n',
-      'Content length: ', tokens.res(req, res, 'content-length'), '-', '\n',
-      'Response time: ', tokens['response-time'](req, res), 'ms', '\n',
-      'Body: ', tokens['data-sent'](req, res), '\n',
-      '---'
-    ].join(''))
+morgan.token('body', req => {
+  return JSON.stringify(req.body)
+})
+
+const requestLogger = morgan(
+  "Method: :method\n" +
+  "Path: :url\n" +
+  "Status: :status\n" +
+  "Res: :res[content-length] - :response-time ms\n" +
+  "Body: :body\n" +
+  "---",
+  {
+    stream: {
+      write: (str) => {
+        logger.info(str)
+      }
+    }
   })
+
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    request.token = authorization.replace('Bearer ', '')
+  } else {
+    request.token = null
+  }
   next()
 }
 
@@ -28,13 +41,19 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: error.message })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({ error: 'token expired' })
   }
 
   next(error)
 }
 
+
 module.exports = {
   requestLogger,
+  tokenExtractor,
   unknownEndpoint,
   errorHandler
 }
