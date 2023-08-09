@@ -3,7 +3,6 @@ import FormInput from './FormInput'
 const LoginForm = (props) => {
   return (
     <>
-      <h2>login</h2>
       <form onSubmit={props.loginHandler}>
         <FormInput
           desc='username'

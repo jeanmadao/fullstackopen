@@ -68,7 +68,6 @@ const App = () => {
     const returnedBlog = await blogService.create(blogRequest)
     setBlogs(blogs.concat(returnedBlog))
     sendNotification('success', `a new blog ${title} by ${author} added`)
-
   }
 
   useEffect(() => {
@@ -111,6 +110,7 @@ const App = () => {
   } else {
     return (
       <div>
+        <h2>login</h2>
         {successMessage && <Notification status="success" message={successMessage} />}
         {errorMessage && <Notification status="error" message={errorMessage} />}
         <LoginForm
