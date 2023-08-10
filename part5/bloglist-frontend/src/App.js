@@ -9,43 +9,28 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-
-  const inputHandler = (setter) => ({ target }) => setter(target.value)
 
   const sendNotification = (status, message) => {
     if (status === 'success') {
       setSuccessMessage(message)
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
     } else if (status === 'error') {
       setErrorMessage(message)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
+    setTimeout(() => {
+      setSuccessMessage(null)
+      setErrorMessage(null)
+    }, 5000)
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
+  const handleLogin = async (loginRequest) => {
     try {
-      const user = await loginService.login({
-        username, password
-      })
+      const user = await loginService.login(loginRequest)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       sendNotification('success', 'successfully logged in')
     } catch (exception) {
       sendNotification('error', 'wrong credentials')
@@ -58,17 +43,14 @@ const App = () => {
     sendNotification('success', 'successfully logged out')
   }
 
-  const createBlog = async (event) => {
-    event.preventDefault()
-
-    const blogRequest = {
-      title,
-      author,
-      url,
+  const createBlog = async (blogRequest) => {
+    try {
+      const returnedBlog = await blogService.create(blogRequest)
+      setBlogs(blogs.concat(returnedBlog))
+      sendNotification('success', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    } catch (exception) {
+      sendNotification('error', 'failed to create new blog')
     }
-    const returnedBlog = await blogService.create(blogRequest)
-    setBlogs(blogs.concat(returnedBlog))
-    sendNotification('success', `a new blog ${title} by ${author} added`)
   }
 
   useEffect(() => {
@@ -97,15 +79,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </p>
         <Togglable buttonLabel="new blog">
-          <BlogForm
-            title={title}
-            author={author}
-            url={url}
-            titleHandler={inputHandler(setTitle)}
-            authorHandler={inputHandler(setAuthor)}
-            urlHandler={inputHandler(setUrl)}
-            createBlog={createBlog}
-          />
+          <BlogForm createBlog={createBlog} />
         </Togglable>
         <BlogsList blogs={blogs} />
       </div>
@@ -113,16 +87,10 @@ const App = () => {
   } else {
     return (
       <div>
-        <h2>login</h2>
+        <h2>Blogs</h2>
         {successMessage && <Notification status="success" message={successMessage} />}
         {errorMessage && <Notification status="error" message={errorMessage} />}
-        <LoginForm
-          username={username}
-          password={password}
-          usernameHandler={inputHandler(setUsername)}
-          passwordHandler={inputHandler(setPassword)}
-          loginHandler={handleLogin}
-        />
+        <LoginForm handleLogin={handleLogin} />
       </div>
     )
   }

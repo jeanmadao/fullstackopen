@@ -1,29 +1,50 @@
+import { useState } from "react"
 import FormInput from "./FormInput"
-const BlogForm = (props) => {
+
+const BlogForm = ({ createBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title,
+      author,
+      url,
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+  const inputHandler = (setter) => ({ target }) => setter(target.value)
+
   return (
     <>
       <h2>create new</h2>
-      <form onSubmit={props.createBlog}>
+      <form onSubmit={addBlog}>
         <FormInput
           desc='title:'
           type='text'
-          val={props.title}
+          val={title}
           name='Title'
-          onChange={props.titleHandler}
+          onChange={inputHandler(setTitle)}
         />
         <FormInput
           desc='author:'
           type='text'
-          val={props.author}
+          val={author}
           name='Author'
-          onChange={props.authorHandler}
+          onChange={inputHandler(setAuthor)}
         />
         <FormInput
           desc='url:'
           type='text'
-          val={props.url}
+          val={url}
           name='Url'
-          onChange={props.urlHandler}
+          onChange={inputHandler(setUrl)}
         />
         <button type='submit'>create</button>
       </form>
