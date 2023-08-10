@@ -7,6 +7,7 @@ const BlogsList = (props) => {
         <Blog
           key={blog.id}
           blog={blog}
+          updateBlog={props.updateBlog}
         />
       )}
     </div>

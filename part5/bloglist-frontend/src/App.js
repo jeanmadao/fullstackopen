@@ -56,6 +56,15 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (blogId, updatedBlog) => {
+    try {
+      const returnedBlog = await blogService.update(blogId, updatedBlog)
+      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+    } catch (exception) {
+      sendNotification('error', 'unable to update the post')
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -84,7 +93,7 @@ const App = () => {
         <Togglable buttonLabel="create new blog">
           <BlogForm createBlog={createBlog} />
         </Togglable>
-        <BlogsList blogs={blogs} />
+        <BlogsList blogs={blogs} updateBlog={updateBlog} />
       </div>
     )
   } else {
