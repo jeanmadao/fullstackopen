@@ -59,16 +59,20 @@ const App = () => {
   const updateBlog = async (blogId, updatedBlog) => {
     try {
       const returnedBlog = await blogService.update(blogId, updatedBlog)
-      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+      setBlogs(blogs
+        .map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
+        .sort((a, b) => a.likes < b.likes ? 1 : -1)
+      )
     } catch (exception) {
       sendNotification('error', 'unable to update the post')
     }
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs => {
+      blogs.sort((a, b) => a.likes < b.likes ? 1 : -1)
       setBlogs(blogs)
-    )
+    })
   }, [])
 
   useEffect(() => {
