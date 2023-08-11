@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Notification from './components/Notification'
 
@@ -15,6 +15,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+
+  const blogFormRef = useRef()
 
   const sendNotification = (status, message) => {
     if (status === 'success') {
@@ -50,6 +52,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogRequest)
       setBlogs(blogs.concat(returnedBlog))
+      blogFormRef.current.toggleVisibility()
       sendNotification('success', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     } catch (exception) {
       sendNotification('error', 'failed to create new blog')
@@ -103,7 +106,7 @@ const App = () => {
           {user.name} logged in
           <button onClick={handleLogout}>logout</button>
         </p>
-        <Togglable buttonLabel="create new blog">
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
           <BlogForm createBlog={createBlog} />
         </Togglable>
         <BlogsList

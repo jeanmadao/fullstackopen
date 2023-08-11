@@ -1,5 +1,5 @@
-import { useState } from "react"
-import FormInput from "./FormInput"
+import { useState } from 'react'
+import FormInput from './FormInput'
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')

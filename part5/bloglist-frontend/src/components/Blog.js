@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [show, setShow] = useState(false)
@@ -34,7 +34,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   return (
     <div style={blogStyle}>
       {`${blog.title} ${blog.author} `}
-      <button onClick={toggleShow}>{show ? "hide" : "view"}</button>
+      <button onClick={toggleShow}>{show ? 'hide' : 'view'}</button>
       {show &&
         <div>
           <div>{blog.url}</div>

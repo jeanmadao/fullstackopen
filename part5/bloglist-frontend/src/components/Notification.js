@@ -1,6 +1,6 @@
 const Notification = (props) => {
   return (
-    <div className={"notification " + props.status}>
+    <div className={'notification ' + props.status}>
       {props.message}
     </div>
   )
