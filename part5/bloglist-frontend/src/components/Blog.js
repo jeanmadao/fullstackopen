@@ -34,13 +34,13 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   return (
     <div style={blogStyle} className='blog'>
       {`${blog.title} ${blog.author} `}
-      <button onClick={toggleShow}>{show ? 'hide' : 'view'}</button>
+      <button onClick={toggleShow} className='toggleBtn'>{show ? 'hide' : 'view'}</button>
       {show &&
         <div className='blogDetails'>
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}
-            <button onClick={increaseLikes}>like</button>
+            <button onClick={increaseLikes} className='likeBtn'>like</button>
           </div>
           <div>{blog.user.name}</div>
           {user.name === blog.user.name &&
