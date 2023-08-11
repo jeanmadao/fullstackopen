@@ -32,11 +32,11 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {`${blog.title} ${blog.author} `}
       <button onClick={toggleShow}>{show ? 'hide' : 'view'}</button>
       {show &&
-        <div>
+        <div className='blogDetails'>
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}
