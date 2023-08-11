@@ -46,7 +46,7 @@ const BlogForm = ({ createBlog }) => {
           name='Url'
           onChange={inputHandler(setUrl)}
         />
-        <button type='submit'>create</button>
+        <button type='submit' className="submitBtn">create</button>
       </form>
     </>
   )

@@ -6,6 +6,7 @@ const FormInput = (props) => {
         type={props.type}
         value={props.val}
         name={props.name}
+        placeholder={props.name}
         onChange={props.onChange}
       />
     </div>
