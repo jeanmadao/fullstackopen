@@ -8,6 +8,8 @@ const BlogsList = (props) => {
           key={blog.id}
           blog={blog}
           updateBlog={props.updateBlog}
+          removeBlog={props.removeBlog}
+          user={props.user}
         />
       )}
     </div>

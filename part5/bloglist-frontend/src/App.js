@@ -64,7 +64,16 @@ const App = () => {
         .sort((a, b) => a.likes < b.likes ? 1 : -1)
       )
     } catch (exception) {
-      sendNotification('error', 'unable to update the post')
+      sendNotification('error', 'failed to update the blog')
+    }
+  }
+
+  const removeBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      setBlogs(blogs.filter(blog => blog.id !== blogId))
+    } catch (exception) {
+      sendNotification('error', 'failed to remove the blog')
     }
   }
 
@@ -97,7 +106,12 @@ const App = () => {
         <Togglable buttonLabel="create new blog">
           <BlogForm createBlog={createBlog} />
         </Togglable>
-        <BlogsList blogs={blogs} updateBlog={updateBlog} />
+        <BlogsList
+          blogs={blogs}
+          updateBlog={updateBlog}
+          removeBlog={removeBlog}
+          user={user}
+        />
       </div>
     )
   } else {

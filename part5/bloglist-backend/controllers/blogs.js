@@ -35,6 +35,8 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
     return response.status(401).json({ error: 'deletion denied' })
   }
   await blog.deleteOne()
+  user.blogs = user.blogs.filter(current => current._id.toString() !== blog._id.toString())
+  await user.save()
 
   response.status(204).end()
 })

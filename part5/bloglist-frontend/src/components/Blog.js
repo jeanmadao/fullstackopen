@@ -1,20 +1,26 @@
 import { useState } from "react"
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [show, setShow] = useState(false)
 
   const toggleShow = () => {
     setShow(!show)
   }
 
-  const increaseLikes = () => {
-    updateBlog(blog.id, {
+  const increaseLikes = async () => {
+    await updateBlog(blog.id, {
       url: blog.url,
       title: blog.title,
       author: blog.author,
       user: blog.user.id,
       likes: blog.likes + 1
     })
+  }
+
+  const remove = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await removeBlog(blog.id)
+    }
   }
 
   const blogStyle = {
@@ -37,6 +43,9 @@ const Blog = ({ blog, updateBlog }) => {
             <button onClick={increaseLikes}>like</button>
           </div>
           <div>{blog.user.name}</div>
+          {user.name === blog.user.name &&
+            <button onClick={remove}>remove</button>
+          }
         </div>
       }
     </div>
