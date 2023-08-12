@@ -7,6 +7,14 @@ describe('Blog app', function() {
       password: 'doubidouba'
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
+
+    const anotherUser = {
+      name: 'Xin Huang',
+      username: 'jimini',
+      password: 'hihouhahou'
+    }
+    cy.request('POST', 'http://localhost:3003/api/users/', anotherUser)
+
     cy.visit('http://localhost:3000')
   })
   it('Login form is shown', function() {
@@ -73,6 +81,45 @@ describe('Blog app', function() {
             .click()
           cy.get('.likeDiv')
             .should('contain', 'likes 1')
+        })
+
+        it('it can be removed by its creator', function() {
+          cy.get('.blog:last')
+            .should('contain', '互いの宇宙 JYOCHO')
+            .get('.toggleBtn')
+            .click()
+
+          cy.get('.removeBtn')
+            .click()
+          cy.wait(1000)
+          cy.get('#blog-list').should('not.contain', '互いの宇宙 JYOCHO')
+        })
+
+        describe('and another blog is added by another user', function() {
+          beforeEach(function() {
+            cy.login({ username: 'jimini', password: 'hihouhahou' })
+            cy.createNote({
+              title: 'グッドバイ',
+              author: 'toe',
+              url: 'https://youtu.be/e1pZIfretEs'
+            })
+          })
+          it('delete button not visible if user is not the creator', function() {
+
+            cy.get('.blog:last')
+              .get('.toggleBtn:last')
+              .click()
+
+            cy.get('.blog:last')
+              .should('not.contain', 'remove')
+
+            cy.get('.blog:first')
+              .get('.toggleBtn:first')
+              .click()
+
+            cy.get('.blog:first')
+              .should('contain', 'remove')
+          })
         })
       })
     })

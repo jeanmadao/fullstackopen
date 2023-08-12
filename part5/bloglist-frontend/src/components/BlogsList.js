@@ -2,7 +2,7 @@ import Blog from './Blog'
 
 const BlogsList = (props) => {
   return (
-    <div>
+    <div id="blog-list">
       {props.blogs.map(blog =>
         <Blog
           key={blog.id}
