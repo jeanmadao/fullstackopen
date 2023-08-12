@@ -30,6 +30,7 @@ const LoginForm = ({ handleLogin }) => {
           val={username}
           name='Username'
           onChange={inputHandler(setUsername)}
+          id='username'
         />
         <FormInput
           desc='password'
@@ -37,8 +38,9 @@ const LoginForm = ({ handleLogin }) => {
           val={password}
           name='Password'
           onChange={inputHandler(setPassword)}
+          id='password'
         />
-        <button type='submit'>login</button>
+        <button type='submit' id='login-btn'>login</button>
       </form>
     </>
   )
