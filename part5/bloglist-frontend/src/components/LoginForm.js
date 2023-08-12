@@ -23,7 +23,7 @@ const LoginForm = ({ handleLogin }) => {
   return (
     <>
       <h2>login</h2>
-      <form onSubmit={login}>
+      <form onSubmit={login} id="login-form">
         <FormInput
           desc='username'
           type='text'
