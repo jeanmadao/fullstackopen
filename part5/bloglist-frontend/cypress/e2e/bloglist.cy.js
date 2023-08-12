@@ -55,6 +55,26 @@ describe('Blog app', function() {
         cy.get('.blog:last')
           .should('contain', '互いの宇宙 JYOCHO')
       })
+
+      describe('and a blog exists', function() {
+        beforeEach(function() {
+          cy.createNote({
+            title: '互いの宇宙',
+            author: 'JYOCHO',
+            url: 'https://youtu.be/Rv1B1ot5tSU'
+          })
+        })
+
+        it('it can be liked', function() {
+          cy.get('.blog:last')
+            .get('.toggleBtn')
+            .click()
+          cy.get('.likeBtn')
+            .click()
+          cy.get('.likeDiv')
+            .should('contain', 'likes 1')
+        })
+      })
     })
   })
 })
