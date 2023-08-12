@@ -105,7 +105,6 @@ describe('Blog app', function() {
             })
           })
           it('delete button not visible if user is not the creator', function() {
-
             cy.contains('互いの宇宙 JYOCHO')
               .contains('view')
               .click()
@@ -119,6 +118,30 @@ describe('Blog app', function() {
 
             cy.contains('グッドバイ toe')
               .should('contain', 'remove')
+          })
+          it('Blogs must be sorted by likes', function() {
+            cy.contains('互いの宇宙 JYOCHO')
+              .contains('view')
+              .click()
+
+            cy.contains('グッドバイ toe')
+              .contains('view')
+              .click()
+
+            cy.contains('互いの宇宙 JYOCHO')
+              .contains('like')
+              .click()
+
+            cy.get('.blog').eq(0).should('contain', '互いの宇宙 JYOCHO')
+            cy.get('.blog').eq(1).should('contain', 'グッドバイ toe')
+
+            cy.contains('グッドバイ toe')
+              .contains('like')
+              .click()
+              .click()
+
+            cy.get('.blog').eq(0).should('contain', 'グッドバイ toe')
+            cy.get('.blog').eq(1).should('contain', '互いの宇宙 JYOCHO')
           })
         })
       })
