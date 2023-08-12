@@ -106,18 +106,18 @@ describe('Blog app', function() {
           })
           it('delete button not visible if user is not the creator', function() {
 
-            cy.get('.blog:last')
-              .get('.toggleBtn:last')
+            cy.contains('互いの宇宙 JYOCHO')
+              .contains('view')
               .click()
 
-            cy.get('.blog:last')
+            cy.contains('互いの宇宙 JYOCHO')
               .should('not.contain', 'remove')
 
-            cy.get('.blog:first')
-              .get('.toggleBtn:first')
+            cy.contains('グッドバイ toe')
+              .contains('view')
               .click()
 
-            cy.get('.blog:first')
+            cy.contains('グッドバイ toe')
               .should('contain', 'remove')
           })
         })
