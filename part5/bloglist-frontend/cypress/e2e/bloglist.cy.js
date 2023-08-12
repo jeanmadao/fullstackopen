@@ -34,5 +34,27 @@ describe('Blog app', function() {
         .should('contain', 'wrong credentials')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
+
+    describe('When logged in', function() {
+      beforeEach(function() {
+        cy.login({ username: 'feilong', password: 'doubidouba' })
+      })
+
+      it('A blog can be created', function() {
+        cy.contains('create new blog').click()
+
+        cy.get('#title').type('互いの宇宙')
+        cy.get('#author').type('JYOCHO')
+        cy.get('#url').type('https://youtu.be/Rv1B1ot5tSU')
+        cy.get('#create-blog-btn').click()
+
+        cy.get('.success')
+          .should('contain', 'a new blog 互いの宇宙 by JYOCHO added')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+
+        cy.get('.blog:last')
+          .should('contain', '互いの宇宙 JYOCHO')
+      })
+    })
   })
 })

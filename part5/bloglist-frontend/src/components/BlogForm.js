@@ -31,6 +31,7 @@ const BlogForm = ({ createBlog }) => {
           val={title}
           name='Title'
           onChange={inputHandler(setTitle)}
+          id='title'
         />
         <FormInput
           desc='author:'
@@ -38,6 +39,7 @@ const BlogForm = ({ createBlog }) => {
           val={author}
           name='Author'
           onChange={inputHandler(setAuthor)}
+          id='author'
         />
         <FormInput
           desc='url:'
@@ -45,8 +47,9 @@ const BlogForm = ({ createBlog }) => {
           val={url}
           name='Url'
           onChange={inputHandler(setUrl)}
+          id='url'
         />
-        <button type='submit' className="submitBtn">create</button>
+        <button type='submit' id="create-blog-btn">create</button>
       </form>
     </>
   )
