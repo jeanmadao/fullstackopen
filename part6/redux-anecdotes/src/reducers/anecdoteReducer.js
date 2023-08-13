@@ -56,5 +56,4 @@ export const vote = (id) => {
   }
 }
 
-
 export default reducer
