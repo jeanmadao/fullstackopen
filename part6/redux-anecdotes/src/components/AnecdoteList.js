@@ -26,9 +26,15 @@ const AnecdoteList = () => {
       {anecdotes.map(anecdote =>
         <Anecdote key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() =>
+          handleClick={() => {
             dispatch({ type: 'anecdotes/vote', payload: anecdote.id })
-          }
+            dispatch({
+              type: 'notification/setNotification',
+              payload: `you voted '${anecdote.content}'`
+            })
+            setTimeout(() =>
+              dispatch({ type: 'notification/resetNotification' }), 5000)
+          }}
         />
       )}
     </>
