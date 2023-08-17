@@ -11,7 +11,7 @@ const anecdoteSlice = createSlice({
     setAnecdotes(state, action) {
       return action.payload
     },
-    sortByVotes(state, action) {
+    sortByVotes(state) {
       state.sort((a, b) => a.votes < b.votes)
     }
   },
