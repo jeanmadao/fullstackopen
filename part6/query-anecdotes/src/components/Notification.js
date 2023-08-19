@@ -1,3 +1,5 @@
+import { useNotificationDispatch, useNotificationValue } from "../NotificationContext"
+
 const Notification = () => {
   const style = {
     border: 'solid',
@@ -5,12 +7,20 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
-  if (true) return null
+
+  const notificationDispatch = useNotificationDispatch()
+  const notification = useNotificationValue()
+
+  if (!notification) return null
+
+  setTimeout(() => {
+    notificationDispatch({ type: 'default' })
+  }, 5000);
+
 
   return (
     <div style={style}>
-      
+      {notification}
     </div>
   )
 }
