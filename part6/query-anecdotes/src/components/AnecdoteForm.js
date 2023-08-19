@@ -9,6 +9,9 @@ const AnecdoteForm = () => {
   const newAnecdoteMutation = useMutation(createAnecdote, {
     onSuccess: () => {
       queryClient.invalidateQueries('anecdotes')
+    },
+    onError: () => {
+      notificationDispatch({ type: 'DISPLAY', payload: 'too short anecdote, must have length 5 or more' })
     }
   })
 
@@ -18,7 +21,7 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     newAnecdoteMutation.mutate({ content, votes: 0 })
-    notificationDispatch({ type: "DISPLAY", payload: `anecdote '${content}' created` })
+    notificationDispatch({ type: 'DISPLAY', payload: `anecdote '${content}' created` })
   }
 
   return (
