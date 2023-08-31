@@ -38,6 +38,7 @@ const Blog = () => {
       navigate("/");
     }
   };
+
   return (
     <div>
       <h2>

@@ -10,12 +10,13 @@ import Togglable from "./components/Togglable";
 
 import { initializeBlogs } from "./reducers/blogReducer";
 import BlogList from "./components/BlogList";
-import { logout, setUser } from "./reducers/loginReducer";
+import { setUser } from "./reducers/loginReducer";
 import UserList from "./components/UserList";
 import { initializeUsers } from "./reducers/userReducer";
 import { Route, Routes } from "react-router-dom";
 import User from "./components/User";
 import Blog from "./components/Blog";
+import Menu from "./components/Menu";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,12 +47,9 @@ const App = () => {
 
   return (
     <div>
+      <Menu />
       <h2>blogs</h2>
       <Notification />
-      <div>
-        {user.name} logged in
-        <button onClick={() => dispatch(logout())}>logout</button>
-      </div>
       <Routes>
         <Route
           path="/"
