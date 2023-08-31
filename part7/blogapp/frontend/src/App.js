@@ -13,6 +13,7 @@ import BlogList from "./components/BlogList";
 import { logout, setUser } from "./reducers/loginReducer";
 import UserList from "./components/UserList";
 import { initializeUsers } from "./reducers/userReducer";
+import { Route, Routes } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -49,11 +50,20 @@ const App = () => {
         {user.name} logged in
         <button onClick={() => dispatch(logout())}>logout</button>
       </div>
-      <UserList />
-      <Togglable buttonLabel="new note">
-        <NewBlogForm />
-      </Togglable>
-      <BlogList />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <Togglable buttonLabel="new note">
+                <NewBlogForm />
+              </Togglable>
+              <BlogList />
+            </div>
+          }
+        />
+        <Route path="/users" element={<UserList />} />
+      </Routes>
     </div>
   );
 };
