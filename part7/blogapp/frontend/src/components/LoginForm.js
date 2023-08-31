@@ -3,25 +3,31 @@ import { useField } from "../hooks";
 import { login } from "../reducers/loginReducer";
 
 const LoginForm = () => {
-  const username = useField("text", "username");
-  const password = useField("password", "password");
+  const { clear: clearUsernameField, ...usernameField } = useField(
+    "text",
+    "username",
+  );
+  const { clear: clearPasswordField, ...passwordField } = useField(
+    "password",
+    "password",
+  );
 
   const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(login(username.value, password.value));
+    dispatch(login(usernameField.value, passwordField.value));
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
         username
-        <input {...username} />
+        <input {...usernameField} />
       </div>
       <div>
         password
-        <input {...password} />
+        <input {...passwordField} />
       </div>
       <button id="login-button" type="submit">
         login

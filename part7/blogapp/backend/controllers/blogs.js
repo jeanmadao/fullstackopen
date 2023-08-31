@@ -10,12 +10,13 @@ router.get("/", async (request, response) => {
 });
 
 router.post("/", userExtractor, async (request, response) => {
-  const { title, author, url, likes } = request.body;
+  const { title, author, url, likes, comments } = request.body;
   const blog = new Blog({
     title,
     author,
     url,
     likes: likes ? likes : 0,
+    comments: comments ? comments : [],
   });
 
   const user = request.user;
@@ -36,12 +37,20 @@ router.post("/", userExtractor, async (request, response) => {
   response.status(201).json(createdBlog);
 });
 
+router.post("/:id/comments", userExtractor, async (request, response) => {
+  const comment = request.body;
+  const blog = await Blog.findById(comment.blogId);
+  blog.comments = blog.comments.concat(comment);
+  const updatedBlog = await blog.save();
+  response.json(updatedBlog);
+});
+
 router.put("/:id", async (request, response) => {
-  const { title, url, author, likes } = request.body;
+  const { title, url, author, likes, comments } = request.body;
 
   let updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
-    { title, url, author, likes },
+    { title, url, author, likes, comments },
     { new: true },
   );
 

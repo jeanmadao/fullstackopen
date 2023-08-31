@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
+import { addBlogUser, removeBlogUser } from "./userReducer";
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -46,10 +47,11 @@ export const like = (id) => {
   };
 };
 
-export const remove = (id) => {
+export const remove = (blogToRemove) => {
   return async (dispatch) => {
-    await blogService.remove(id);
-    dispatch(removeBlog(id));
+    await blogService.remove(blogToRemove.id);
+    dispatch(removeBlog(blogToRemove.id));
+    dispatch(removeBlogUser(blogToRemove));
   };
 };
 
@@ -57,6 +59,14 @@ export const create = (blogToCreate) => {
   return async (dispatch) => {
     const returnedBlog = await blogService.create(blogToCreate);
     dispatch(createBlog(returnedBlog));
+    dispatch(addBlogUser(returnedBlog));
+  };
+};
+
+export const comment = (comment) => {
+  return async (dispatch) => {
+    const returnedBlog = await blogService.comment(comment);
+    dispatch(updateBlog({ id: comment.blogId, returnedBlog }));
   };
 };
 

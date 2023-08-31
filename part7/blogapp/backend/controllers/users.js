@@ -31,6 +31,7 @@ router.get("/", async (request, response) => {
     author: 1,
     url: 1,
     likes: 1,
+    comments: 1,
   });
 
   response.json(users);

@@ -5,20 +5,30 @@ import { displayNotification } from "../reducers/notificationReducer";
 
 const NewBlogForm = () => {
   const dispatch = useDispatch();
-  const title = useField("text", "title");
-  const author = useField("text", "author");
-  const url = useField("text", "url");
+  const { clear: clearTitleField, ...titleField } = useField("text", "title");
+  const { clear: clearAuthorField, ...authorField } = useField(
+    "text",
+    "author",
+  );
+  const { clear: clearUrlField, ...urlField } = useField("text", "url");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     dispatch(
-      create({ title: title.value, author: author.value, url: url.value }),
+      create({
+        title: titleField.value,
+        author: authorField.value,
+        url: urlField.value,
+      }),
     );
     dispatch(
       displayNotification(
-        `A new blog '${title.value}' by '${author.value}' added`,
+        `A new blog '${titleField.value}' by '${authorField.value}' added`,
       ),
     );
+    clearTitleField();
+    clearAuthorField();
+    clearUrlField();
   };
 
   return (
@@ -27,15 +37,15 @@ const NewBlogForm = () => {
       <form onSubmit={handleSubmit}>
         <div>
           title
-          <input {...title} />
+          <input {...titleField} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...authorField} />
         </div>
         <div>
           url
-          <input {...url} />
+          <input {...urlField} />
         </div>
         <button type="submit">create</button>
       </form>

@@ -18,6 +18,11 @@ const create = async (object) => {
   return request.data;
 };
 
+const comment = async (object) => {
+  const request = await axios.post(`${baseUrl}/${object.id}/comments`, object);
+  return request.data;
+};
+
 const update = async (object) => {
   const request = await axios.put(`${baseUrl}/${object.id}`, object, {
     headers,
@@ -29,4 +34,4 @@ const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`, { headers });
 };
 
-export default { getAll, create, update, remove };
+export default { getAll, create, comment, update, remove };
