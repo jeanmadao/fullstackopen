@@ -11,6 +11,8 @@ import Togglable from "./components/Togglable";
 import { initializeBlogs } from "./reducers/blogReducer";
 import BlogList from "./components/BlogList";
 import { logout, setUser } from "./reducers/loginReducer";
+import UserList from "./components/UserList";
+import { initializeUsers } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -23,6 +25,10 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(initializeUsers());
   }, [dispatch]);
 
   if (!user) {
@@ -43,6 +49,7 @@ const App = () => {
         {user.name} logged in
         <button onClick={() => dispatch(logout())}>logout</button>
       </div>
+      <UserList />
       <Togglable buttonLabel="new note">
         <NewBlogForm />
       </Togglable>
