@@ -17,6 +17,19 @@ import { Route, Routes } from "react-router-dom";
 import User from "./components/User";
 import Blog from "./components/Blog";
 import Menu from "./components/Menu";
+import { styled } from "styled-components";
+
+const StyledApp = styled.div`
+  background: #282828;
+  min-height: 100vh;
+  color: #ebdbb2;
+`;
+
+const Main = styled.main`
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+`;
 
 const App = () => {
   const dispatch = useDispatch();
@@ -37,36 +50,39 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
-        <h2>log in to application</h2>
-        <Notification />
-        <LoginForm />
-      </div>
+      <StyledApp>
+        <Main>
+          <h2>log in to application</h2>
+          <Notification />
+          <LoginForm />
+        </Main>
+      </StyledApp>
     );
   }
 
   return (
-    <div>
+    <StyledApp>
       <Menu />
-      <h2>blogs</h2>
-      <Notification />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              <Togglable buttonLabel="new note">
-                <NewBlogForm />
-              </Togglable>
-              <BlogList />
-            </div>
-          }
-        />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/blogs/:id" element={<Blog />} />
-      </Routes>
-    </div>
+      <Main>
+        <Notification />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <BlogList />
+                <Togglable buttonLabel="new note">
+                  <NewBlogForm />
+                </Togglable>
+              </div>
+            }
+          />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/blogs/:id" element={<Blog />} />
+        </Routes>
+      </Main>
+    </StyledApp>
   );
 };
 
